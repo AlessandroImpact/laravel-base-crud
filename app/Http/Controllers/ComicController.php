@@ -26,7 +26,7 @@ class ComicController extends Controller
      */
     public function create()
     {
-        //
+        return view('comics.create');
     }
 
     /**
@@ -37,7 +37,50 @@ class ComicController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        //definisco delle validazioni utilizzando il metodo validate di request
+        $request->validate(
+
+            //array associativo con validazioni
+            [
+
+                "title" =>'required|min:5',
+
+                "description" => 'required|min:10',
+
+                "thumb" => 'required|url',
+
+                "price" => 'required|numeric| min:1',
+
+                "series" => 'required| min:2',
+
+                "sale_date" => 'required|date',
+
+                "type" => 'required',
+
+            ]
+
+        );
+
+        // salvo array associativo con dati del form
+        $data = $request->all();
+
+        //nuova istanza 
+        $newComic = new Comic();
+        // $newComic->title = $data['title'];
+        // $newComic->description = $data['description'];
+        // $newComic->thumb = $data['thumb'];
+        // $newComic->price = $data['price'];
+        // $newComic->series = $data['series'];
+        // $newComic->sale_date = $data['sale_date'];
+        // $newComic->type = $data['type'];
+        $newComic->fill($data);
+        // salvo
+        $newComic->save();
+
+        // reindirizzo al nuovo comic
+        return redirect()->route('comics.show', $newComic->id)->with('insert', 'Nuovo fumetto inserito con successo!');
+
     }
 
     /**
